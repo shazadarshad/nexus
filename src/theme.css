@@ -979,3 +979,470 @@ h3 {
 .sidebar.collapsed .brand-link {
   margin-bottom: 4px;
 }
+
+/* ───────── Finance v2 ───────── */
+.worth-strip {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 24px;
+  margin-bottom: 18px;
+}
+.worth-total {
+  font-size: 40px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  margin: 2px 0 4px;
+}
+.worth-month {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.worth-io {
+  display: flex;
+  gap: 28px;
+}
+.worth-io > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.worth-io strong {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.month-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.month-stepper span {
+  min-width: 118px;
+  text-align: center;
+}
+.month-stepper .icon-btn {
+  width: 28px;
+  height: 28px;
+}
+.fin-tabs {
+  margin-bottom: 18px;
+}
+
+/* Account cards */
+.acct-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(230px, 1fr);
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  margin-bottom: 18px;
+  scrollbar-width: none;
+}
+.acct-strip::-webkit-scrollbar {
+  display: none;
+}
+.acct-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+}
+.acct-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 1px var(--border);
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: box-shadow 0.2s, transform 0.2s var(--ease);
+}
+.acct-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--c);
+}
+.acct-card:hover {
+  box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-s);
+}
+.acct-card.archived {
+  opacity: 0.55;
+}
+.acct-card-main {
+  text-align: left;
+  padding: 18px 18px 14px;
+  flex: 1;
+}
+.acct-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+}
+.acct-name {
+  margin-top: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.acct-balance {
+  margin-top: 12px;
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+.acct-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--border);
+}
+.acct-card-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.acct-card-actions button + button {
+  border-left: 1px solid var(--border);
+}
+.acct-card-actions button:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.acct-card.add {
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 210px;
+  color: var(--text-2);
+  box-shadow: inset 0 0 0 1.5px var(--border-strong);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-weight: 500;
+}
+.acct-card.add::before {
+  display: none;
+}
+.acct-card.add:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Transactions */
+.tx-card {
+  padding: 8px 8px 16px;
+}
+.tx-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 8px 14px;
+}
+.tx-day {
+  margin-top: 6px;
+}
+.tx-day-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.tx-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-align: left;
+  transition: background 0.12s;
+}
+.tx-row:hover {
+  background: var(--surface-2);
+}
+.tx-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tx-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.tx-title {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tx-sub {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tx-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.tx-amount strong {
+  font-weight: 600;
+}
+.tx-running {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.acct-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 8px 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--c) 8%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 25%, transparent);
+}
+.acct-banner .dot {
+  width: 10px;
+  height: 10px;
+  background: var(--c);
+}
+.acct-banner .right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.quick-add-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.budget-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+/* Transaction modal */
+.amount-hero {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  padding: 24px 0 2px;
+}
+.amount-hint {
+  text-align: center;
+  margin-bottom: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.amount-hero span {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.amount-hero input {
+  min-width: 1.6ch;
+  max-width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 46px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.amount-hero.income input,
+.amount-hero.income span {
+  color: var(--success);
+}
+.acct-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+.acct-chip {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-align: left;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+  transition: box-shadow 0.12s, background 0.12s;
+}
+.acct-chip .dot {
+  background: var(--c);
+  grid-row: span 2;
+}
+.acct-chip-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acct-chip-bal {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.acct-chip.on {
+  box-shadow: inset 0 0 0 2px var(--accent);
+  background: var(--accent-soft);
+}
+.bal-preview {
+  margin-top: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.bal-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.acct-type-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.acct-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 4px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+.acct-type.on {
+  color: var(--accent);
+  box-shadow: inset 0 0 0 2px var(--accent);
+  background: var(--accent-soft);
+}
+.money-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+}
+.money-field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.money-field span {
+  color: var(--muted);
+  font-weight: 500;
+}
+.money-field input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .worth-strip {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+  }
+  .worth-total {
+    font-size: 34px;
+  }
+  .worth-month {
+    align-items: stretch;
+  }
+  .worth-io {
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .worth-io > div {
+    align-items: flex-start;
+  }
+  .fin-tabs .segmented {
+    display: flex;
+    width: 100%;
+  }
+  .fin-tabs .segmented button {
+    flex: 1;
+    justify-content: center;
+    padding: 6px 4px;
+  }
+  .acct-strip {
+    grid-auto-columns: 78%;
+    margin-left: -14px;
+    margin-right: -14px;
+    padding: 0 14px 4px;
+    scroll-padding-inline: 14px;
+  }
+  .acct-type-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .tx-toolbar > * {
+    flex: 1 1 auto;
+  }
+  .amount-hero input {
+    font-size: 40px;
+  }
+}

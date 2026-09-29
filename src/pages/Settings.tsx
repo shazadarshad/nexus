@@ -80,7 +80,7 @@ export default function Settings() {
           </Row>
           <Row label="Currency">
             <select className="input" value={s.currency} onChange={(e) => update({ currency: e.target.value })} style={{ maxWidth: 160 }}>
-              {['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD', 'CHF', 'CNY', 'BRL', 'PKR', 'AED'].map((c) => (
+              {['LKR', 'USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD', 'AED', 'SGD', 'JPY'].map((c) => (
                 <option key={c}>{c}</option>
               ))}
             </select>

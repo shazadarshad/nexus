@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type {
+  Account,
   Activity,
   CalEvent,
   DataState,
@@ -21,7 +22,7 @@ import { uid } from '../lib/id';
 import { addDays, addMonths, today, weekdayOf } from '../lib/date';
 import { createSeed } from '../lib/seed';
 
-export const DATA_VERSION = 2;
+export const DATA_VERSION = 3;
 
 export const defaultSettings: Settings = {
   name: 'Alex',
@@ -32,7 +33,7 @@ export const defaultSettings: Settings = {
   shortBreak: 5,
   longBreak: 15,
   sessionsBeforeLong: 4,
-  currency: 'USD',
+  currency: 'LKR',
   sounds: true,
   notifications: false,
   density: 'comfortable',
@@ -48,6 +49,7 @@ export const emptyData = (): DataState => ({
   events: [],
   habits: [],
   sessions: [],
+  accounts: [],
   transactions: [],
   budgets: {},
   journal: {},
@@ -89,7 +91,15 @@ export interface Actions {
   // focus
   logSession: (s: Omit<FocusSession, 'id'>) => void;
   // finance
-  addTransaction: (t: Omit<Transaction, 'id'>) => void;
+  addAccount: (a: Partial<Account> & { name: string }) => Account;
+  updateAccount: (id: ID, patch: Partial<Account>) => void;
+  /** Deletes the account; its transactions are removed too. Returns what was removed for undo. */
+  deleteAccount: (id: ID) => { account: Account; transactions: Transaction[] } | undefined;
+  restoreAccount: (a: Account, tx: Transaction[]) => void;
+  /** Records a balance adjustment so the account shows exactly `target` today. */
+  setAccountBalance: (id: ID, target: number, currentBalance: number) => void;
+  addTransaction: (t: Omit<Transaction, 'id' | 'createdAt'> & { createdAt?: number }) => Transaction;
+  restoreTransaction: (t: Transaction) => void;
   updateTransaction: (id: ID, patch: Partial<Transaction>) => void;
   deleteTransaction: (id: ID) => void;
   setBudget: (category: string, amount: number | null) => void;
@@ -331,10 +341,58 @@ export const useData = create<Store>()(
           if (sess.kind === 'focus') log('focus', `Focused for ${sess.minutes} min`);
         },
 
-        addTransaction: (t) => {
-          set((s) => ({ transactions: [{ ...t, id: uid() }, ...s.transactions] }));
-          log('finance', `${t.amount < 0 ? 'Expense' : 'Income'}: ${Math.abs(t.amount).toFixed(2)} · ${t.category}`);
+        addAccount: (a) => {
+          const acc: Account = {
+            id: uid(),
+            type: 'bank',
+            institution: '',
+            last4: '',
+            openingBalance: 0,
+            color: '#0071e3',
+            archived: false,
+            createdAt: Date.now(),
+            ...a,
+          };
+          set((s) => ({ accounts: [...s.accounts, acc] }));
+          log('finance', `Added account “${acc.name}”`);
+          return acc;
         },
+        updateAccount: (id, patch) => set((s) => ({ accounts: s.accounts.map((a) => (a.id === id ? { ...a, ...patch } : a)) })),
+        deleteAccount: (id) => {
+          const account = get().accounts.find((a) => a.id === id);
+          if (!account) return undefined;
+          const transactions = get().transactions.filter((t) => t.accountId === id || t.toAccountId === id);
+          set((s) => ({
+            accounts: s.accounts.filter((a) => a.id !== id),
+            transactions: s.transactions.filter((t) => t.accountId !== id && t.toAccountId !== id),
+          }));
+          log('finance', `Deleted account “${account.name}”`);
+          return { account, transactions };
+        },
+        restoreAccount: (a, tx) => set((s) => ({ accounts: [...s.accounts, a], transactions: [...tx, ...s.transactions] })),
+        setAccountBalance: (id, target, currentBalance) => {
+          const diff = Math.round((target - currentBalance) * 100) / 100;
+          if (!diff) return;
+          const acc = get().accounts.find((a) => a.id === id);
+          get().addTransaction({
+            date: today(),
+            kind: 'adjustment',
+            amount: diff,
+            category: 'Balance adjustment',
+            note: `Balance set to ${target.toLocaleString('en-LK')}`,
+            accountId: id,
+            toAccountId: null,
+          });
+          if (acc) log('finance', `Balance of “${acc.name}” set by hand`);
+        },
+        addTransaction: (t) => {
+          const tx: Transaction = { createdAt: Date.now(), ...t, id: uid() };
+          set((s) => ({ transactions: [tx, ...s.transactions] }));
+          const verb = tx.kind === 'transfer' ? 'Transfer' : tx.kind === 'adjustment' ? 'Adjustment' : tx.amount < 0 ? 'Expense' : 'Income';
+          if (tx.kind !== 'adjustment') log('finance', `${verb}: ${Math.abs(tx.amount).toLocaleString('en-LK')} · ${tx.category}`);
+          return tx;
+        },
+        restoreTransaction: (t) => set((s) => ({ transactions: [t, ...s.transactions] })),
         updateTransaction: (id, patch) =>
           set((s) => ({ transactions: s.transactions.map((t) => (t.id === id ? { ...t, ...patch } : t)) })),
         deleteTransaction: (id) => set((s) => ({ transactions: s.transactions.filter((t) => t.id !== id) })),
@@ -374,6 +432,7 @@ export const useData = create<Store>()(
 
         updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
         importData: (d) => {
+          if (!d.version || d.version < 3 || !Array.isArray(d.accounts)) migrateFinanceV3(d);
           set({ ...emptyData(), ...d, settings: { ...defaultSettings, ...d.settings } });
           log('system', 'Imported workspace data');
         },
@@ -388,8 +447,8 @@ export const useData = create<Store>()(
       migrate: (persisted, from) => migrate(persisted as DataState, from),
       partialize: (s) => {
         // strip functions
-        const { tasks, projects, notes, events, habits, sessions, transactions, budgets, journal, goals, activity, settings, version } = s;
-        return { tasks, projects, notes, events, habits, sessions, transactions, budgets, journal, goals, activity, settings, version };
+        const { tasks, projects, notes, events, habits, sessions, accounts, transactions, budgets, journal, goals, activity, settings, version } = s;
+        return { tasks, projects, notes, events, habits, sessions, accounts, transactions, budgets, journal, goals, activity, settings, version };
       },
     }
   )
@@ -413,10 +472,59 @@ function migrate(d: DataState, from: number): DataState {
     }
     d.version = 2;
   }
+  if (from < 3 && d) migrateFinanceV3(d);
   return d;
 }
 
+type LegacyTx = { id: string; date: string; amount: number; category: string; note: string; account?: string; kind?: string };
+
+/** v2 → v3: free-text account names become real accounts with balances; currency defaults to LKR. */
+export function migrateFinanceV3(d: DataState) {
+  const legacy = (d.transactions || []) as unknown as LegacyTx[];
+  const accounts: Account[] = Array.isArray(d.accounts) ? d.accounts : [];
+  const byName = new Map(accounts.map((a) => [a.name.toLowerCase(), a]));
+  const ensure = (name: string) => {
+    const key = (name || 'Main account').trim() || 'Main account';
+    const hit = byName.get(key.toLowerCase());
+    if (hit) return hit;
+    const lower = key.toLowerCase();
+    const type: Account['type'] = /card|credit/.test(lower) ? 'card' : /cash/.test(lower) ? 'cash' : /sav/.test(lower) ? 'savings' : 'bank';
+    const acc: Account = {
+      id: uid(),
+      name: key,
+      type,
+      institution: '',
+      last4: '',
+      openingBalance: 0,
+      color: ['#0071e3', '#1d1d1f', '#34a853', '#f5a623'][accounts.length % 4],
+      archived: false,
+      createdAt: Date.now(),
+    };
+    accounts.push(acc);
+    byName.set(lower, acc);
+    return acc;
+  };
+  d.transactions = legacy.map((t, i) => {
+    if ((t as unknown as Transaction).accountId) return t as unknown as Transaction;
+    const kind: Transaction['kind'] = t.amount >= 0 ? 'income' : 'expense';
+    return {
+      id: t.id,
+      date: t.date,
+      kind,
+      amount: t.amount,
+      category: t.category,
+      note: t.note || '',
+      accountId: ensure(t.account || 'Main account').id,
+      toAccountId: null,
+      createdAt: Date.now() - i,
+    };
+  });
+  d.accounts = accounts;
+  if (d.settings && (!d.settings.currency || d.settings.currency === 'USD')) d.settings.currency = 'LKR';
+  d.version = 3;
+}
+
 export const getData = (): DataState => {
-  const { tasks, projects, notes, events, habits, sessions, transactions, budgets, journal, goals, activity, settings, version } = useData.getState();
-  return { tasks, projects, notes, events, habits, sessions, transactions, budgets, journal, goals, activity, settings, version };
+  const { tasks, projects, notes, events, habits, sessions, accounts, transactions, budgets, journal, goals, activity, settings, version } = useData.getState();
+  return { tasks, projects, notes, events, habits, sessions, accounts, transactions, budgets, journal, goals, activity, settings, version };
 };

@@ -9,6 +9,7 @@ import { Empty, Progress, RichText } from '../components/ui';
 import { addDays, fmtDate, fmtMinutes, fmtTime, greeting, timeAgo, today, timeToMin } from '../lib/date';
 import { focusOn, goalProgress, habitStreak, insights, isHabitDone, monthTotals, productivityScore, seriesFocus, seriesTasksDone } from '../lib/analytics';
 import { cx, fmtMoney } from '../lib/id';
+import { netWorth } from '../lib/finance';
 import type { JournalEntry } from '../types';
 
 const MOODS = ['Awful', 'Bad', 'Okay', 'Good', 'Great'];
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const weekFocus = seriesFocus(state.sessions, 14).map((x) => x.value);
   const habits = state.habits.filter((h) => !h.archived && h.daysOfWeek.includes(new Date().getDay()));
   const month = monthTotals(state.transactions, t.slice(0, 7));
+  const worth = netWorth(state.accounts, state.transactions);
   const journal = state.journal[t];
 
   const setMood = (mood: JournalEntry['mood']) =>
@@ -276,18 +278,20 @@ export default function Dashboard() {
               Finance <Icon name="chevronRight" size={13} />
             </button>
           </div>
+          <div className="small muted">Net worth · {state.accounts.filter((a) => !a.archived).length} accounts</div>
+          <div className="stat-value" style={{ fontSize: 26, marginBottom: 12 }}>{fmtMoney(worth.total, state.settings.currency)}</div>
           <div className="fin-mini">
             <div>
-              <div className="small muted">Income</div>
+              <div className="small muted">In</div>
               <div className="success-text strong">{fmtMoney(month.income, state.settings.currency)}</div>
             </div>
             <div>
-              <div className="small muted">Spent</div>
-              <div className="danger-text strong">{fmtMoney(month.expense, state.settings.currency)}</div>
+              <div className="small muted">Out</div>
+              <div className="strong">{fmtMoney(month.expense, state.settings.currency)}</div>
             </div>
             <div>
               <div className="small muted">Net</div>
-              <div className="strong">{fmtMoney(month.net, state.settings.currency)}</div>
+              <div className="strong">{fmtMoney(month.net, state.settings.currency, { sign: true })}</div>
             </div>
           </div>
         </section>

@@ -46,10 +46,22 @@ export const download = (filename: string, content: string, type = 'application/
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
-export const fmtMoney = (n: number, currency = 'USD') => {
-  try {
-    return new Intl.NumberFormat(undefined, { style: 'currency', currency, maximumFractionDigits: 2 }).format(n);
-  } catch {
-    return `${currency} ${n.toFixed(2)}`;
+/** Money formatting. LKR renders the local way ("Rs 185,000"); others use Intl. */
+export const fmtMoney = (n: number, currency = 'LKR', opts: { sign?: boolean; decimals?: boolean } = {}) => {
+  const neg = n < 0;
+  const abs = Math.abs(n);
+  const hasCents = Math.round(abs * 100) % 100 !== 0;
+  const digits = opts.decimals || hasCents ? 2 : 0;
+  let body: string;
+  if (currency === 'LKR') {
+    body = `Rs ${abs.toLocaleString('en-LK', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+  } else {
+    try {
+      body = new Intl.NumberFormat(undefined, { style: 'currency', currency, minimumFractionDigits: digits, maximumFractionDigits: digits }).format(abs);
+    } catch {
+      body = `${currency} ${abs.toFixed(digits)}`;
+    }
   }
+  if (neg) return `−${body}`;
+  return opts.sign && n > 0 ? `+${body}` : body;
 };
