@@ -4,6 +4,7 @@ import { toast } from '../store/ui';
 import { Topbar } from '../components/Shell';
 import { Icon } from '../components/Icon';
 import { Confirm, Segmented } from '../components/ui';
+import { InstallButton, InstallStatus } from '../components/InstallButton';
 import { download, cx } from '../lib/id';
 import { today } from '../lib/date';
 import type { DataState, Settings as S } from '../types';
@@ -107,6 +108,15 @@ export default function Settings() {
           </Row>
           <Row label="Desktop notifications">
             {s.notifications ? <Switch checked onChange={() => update({ notifications: false })} /> : <button className="btn sm" onClick={requestNotif}><Icon name="bell" size={14} /> Enable</button>}
+          </Row>
+        </Section>
+
+        <Section title="App" icon="download">
+          <Row label="Install Nexus" hint="Open it from your dock or home screen, full-screen and offline">
+            <div className="row gap-s">
+              <InstallStatus />
+              <InstallButton label="Install" />
+            </div>
           </Row>
         </Section>
 

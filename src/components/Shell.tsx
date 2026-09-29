@@ -1,3 +1,4 @@
+import { LogoMark } from './Logo';
 import type { ReactNode } from 'react';
 import { useData } from '../store/data';
 import { useUI } from '../store/ui';
@@ -34,8 +35,9 @@ export function Sidebar() {
       {mobile && <div className="scrim" onClick={() => set({ mobileNav: false })} />}
       <aside className={cx('sidebar', collapsed && 'collapsed', mobile && 'mobile-open')}>
         <div className="brand">
-          <button className={cx('wordmark', collapsed && 'mono')} onClick={() => navigate('home')} title="Nexus home">
-            {collapsed ? 'N' : 'Nexus'}
+          <button className="brand-link" onClick={() => navigate('home')} title="Nexus home">
+            <LogoMark size={22} />
+            {!collapsed && <span className="wordmark">Nexus</span>}
           </button>
           
           <button

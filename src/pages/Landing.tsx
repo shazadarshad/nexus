@@ -1,7 +1,9 @@
+import { LogoMark } from '../components/Logo';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useUI } from '../store/ui';
 import { Icon } from '../components/Icon';
 import { cx } from '../lib/id';
+import { InstallButton } from '../components/InstallButton';
 import '../landing.css';
 
 const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
@@ -99,6 +101,7 @@ export default function Landing() {
       <header className={cx('lp-nav', scrolled && 'scrolled')}>
         <div className="lp-wrap lp-nav-inner">
           <button className="lp-logo" onClick={() => rootRef.current?.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Nexus home">
+            <LogoMark size={20} />
             NEXUS
           </button>
           <nav className="lp-links">
@@ -106,6 +109,7 @@ export default function Landing() {
             <button onClick={() => go('features')}>Features</button>
             <button onClick={() => go('process')}>How it works</button>
             <button onClick={() => go('privacy')}>Privacy</button>
+            <InstallButton className="lp-nav-install" label="Install" />
             <button className="lp-nav-cta" onClick={open}>
               Open app
             </button>
@@ -130,7 +134,7 @@ export default function Landing() {
               See it in action <Icon name="chevronRight" size={15} strokeWidth={2.4} />
             </button>
           </div>
-          <p className="lp-fine">Free. No account. Works offline.</p>
+          <p className="lp-fine">Free. No account. Works offline — install it like an app.</p>
         </div>
       </section>
 
@@ -279,7 +283,10 @@ export default function Landing() {
         <div className="lp-wrap">
           <div className="lp-foot-grid">
             <div>
-              <div className="lp-logo">NEXUS</div>
+              <div className="lp-logo">
+                <LogoMark size={20} />
+                NEXUS
+              </div>
               <p className="lp-foot-note">A personal operating system for people who like their tools quiet.</p>
             </div>
             <FootCol title="Product" items={[['Dashboard', 'dashboard'], ['Tasks', 'tasks'], ['Notes', 'notes'], ['Calendar', 'calendar']]} />

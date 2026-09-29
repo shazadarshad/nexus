@@ -95,6 +95,6 @@ export function useTimerEngine() {
     if (tState.running) {
       const r = Math.ceil(tState.remaining);
       document.title = `${String(Math.floor(r / 60)).padStart(2, '0')}:${String(r % 60).padStart(2, '0')} · ${tState.mode === 'focus' ? 'Focus' : 'Break'} — Nexus`;
-    } else document.title = 'Nexus — Personal Operating System';
+    } else document.title = 'Nexus — Your whole day, in one quiet place';
   }, [tState.running, Math.ceil(tState.remaining), tState.mode]); // eslint-disable-line
 }

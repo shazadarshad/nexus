@@ -956,3 +956,26 @@ h3 {
     padding-left: 4px;
   }
 }
+
+.install-steps {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-link img {
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.sidebar.collapsed .brand-link {
+  margin-bottom: 4px;
+}

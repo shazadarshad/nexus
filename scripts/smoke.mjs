@@ -7,7 +7,7 @@ process.env.PLAYWRIGHT_BROWSERS_PATH ||= '/opt/playwright';
 const { chromium } = require('playwright');
 
 const root = '/projects/sandbox/nexus/dist';
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
+const types = { '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 const srv = http.createServer((req, res) => {
   let p = path.join(root, decodeURIComponent(req.url.split('?')[0]));
   if (!fs.existsSync(p) || fs.statSync(p).isDirectory()) p = path.join(root, 'index.html');

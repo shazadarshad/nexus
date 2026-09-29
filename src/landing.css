@@ -726,3 +726,23 @@
     margin-right: 12px;
   }
 }
+
+.lp-links .lp-nav-install {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #0066cc;
+}
+.lp-links .lp-nav-install:hover {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.lp-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.lp-logo img {
+  border-radius: 5px;
+}
