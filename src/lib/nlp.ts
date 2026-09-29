@@ -97,7 +97,7 @@ export function parseInput(raw: string, projectNames: string[] = []): ParsedInpu
   take(/\s(every\s?day|daily|every\s?weekday|weekdays|every\s?week|weekly|every\s?month|monthly)(?=\s)/i, (m) => {
     const v = m[1].toLowerCase().replace(/\s/g, '');
     out.recurrence = v.includes('weekday') ? 'weekdays' : v.includes('day') || v === 'daily' ? 'daily' : v.includes('week') ? 'weekly' : 'monthly';
-    out.chips.push({ kind: 'recurrence', label: `↻ ${out.recurrence}` });
+    out.chips.push({ kind: 'recurrence', label: `Repeats ${out.recurrence}` });
     if (!out.due) out.due = today();
   });
 

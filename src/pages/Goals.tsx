@@ -11,7 +11,7 @@ import { diffDays, fmtDate, fmtMinutes, today } from '../lib/date';
 import { cx } from '../lib/id';
 import type { Goal } from '../types';
 
-const COLORS = ['#7c5cff', '#00d4ff', '#22c55e', '#f59e0b', '#ef4444', '#ec4899'];
+const COLORS = ['#0071e3', '#5ac8fa', '#34a853', '#f5a623', '#ff3b30', '#af52de'];
 
 export default function Goals() {
   const goals = useData((s) => s.goals);
@@ -45,7 +45,7 @@ export default function Goals() {
             return (
               <div key={g.id} className="card goal-card" style={{ ['--c' as string]: g.color }}>
                 <div className="row between">
-                  <span className={cx('chip tiny', onTrack ? 'ok' : 'warn')}>{p.pct >= 1 ? '🎉 Achieved' : onTrack ? 'On track' : 'Behind'}</span>
+                  <span className={cx('chip tiny', onTrack ? 'ok' : 'warn')}>{p.pct >= 1 ? 'Achieved' : onTrack ? 'On track' : 'Behind'}</span>
                   <button className="icon-btn" onClick={() => setEdit(g)} aria-label="Edit">
                     <Icon name="edit" size={15} />
                   </button>
@@ -72,10 +72,10 @@ export default function Goals() {
                   </div>
                 )}
                 <div className="row gap-s small muted">
-                  <span className="chip tiny">{g.metric === 'tasks' ? '☑ Task-based' : g.metric === 'focus' ? '⏱ Focus-based' : '✎ Manual'}</span>
+                  <span className="chip tiny">{g.metric === 'tasks' ? 'Task-based' : g.metric === 'focus' ? 'Focus-based' : 'Manual'}</span>
                   {proj && (
                     <span className="project-pill tiny" style={{ ['--c' as string]: proj.color }}>
-                      {proj.icon} {proj.name}
+                      {proj.name}
                     </span>
                   )}
                 </div>
@@ -84,7 +84,7 @@ export default function Goals() {
                     <button className="btn sm" onClick={() => useData.getState().updateGoal(g.id, { manualProgress: Math.max(0, g.manualProgress - 1) })}>
                       −1
                     </button>
-                    <button className="btn sm primary" onClick={() => { useData.getState().updateGoal(g.id, { manualProgress: g.manualProgress + 1 }); if (g.manualProgress + 1 === g.target) toast('🎉 Goal achieved!', { kind: 'success' }); }}>
+                    <button className="btn sm primary" onClick={() => { useData.getState().updateGoal(g.id, { manualProgress: g.manualProgress + 1 }); if (g.manualProgress + 1 === g.target) toast('Goal achieved', { kind: 'success' }); }}>
                       +1 progress
                     </button>
                   </div>
@@ -156,7 +156,7 @@ function GoalModal({ goal, onClose }: { goal: Goal | 'new' | null; onClose: () =
               <option value="">Select…</option>
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.icon} {p.name}
+                  {p.name}
                 </option>
               ))}
             </select>

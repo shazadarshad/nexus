@@ -12,19 +12,19 @@ import type { Note } from '../types';
 type Mode = 'edit' | 'split' | 'preview';
 
 const TEMPLATES: { name: string; icon: string; build: () => Partial<Note> }[] = [
-  { name: 'Blank', icon: '📄', build: () => ({ title: 'Untitled', content: '' }) },
+  { name: 'Blank', icon: 'notes', build: () => ({ title: 'Untitled', content: '' }) },
   {
     name: 'Daily note',
-    icon: '📅',
+    icon: 'calendar',
     build: () => ({
       title: `Daily — ${fmtDate(today(), { weekday: 'short', month: 'short', day: 'numeric' })}`,
       folder: 'Daily',
-      content: `# ${fmtDate(today(), { weekday: 'long', month: 'long', day: 'numeric' })}\n\n## 🎯 Top 3 priorities\n- [ ] \n- [ ] \n- [ ] \n\n## 📝 Notes\n\n\n## 🙏 Grateful for\n- \n\n#daily`,
+      content: `# ${fmtDate(today(), { weekday: 'long', month: 'long', day: 'numeric' })}\n\n## Top 3 priorities\n- [ ] \n- [ ] \n- [ ] \n\n## Notes\n\n\n## Grateful for\n- \n\n#daily`,
     }),
   },
   {
     name: 'Meeting',
-    icon: '👥',
+    icon: 'users',
     build: () => ({
       title: 'Meeting notes',
       folder: 'Work',
@@ -33,7 +33,7 @@ const TEMPLATES: { name: string; icon: string; build: () => Partial<Note> }[] = 
   },
   {
     name: 'Project brief',
-    icon: '🚀',
+    icon: 'flag',
     build: () => ({
       title: 'Project brief',
       folder: 'Work',
@@ -42,8 +42,8 @@ const TEMPLATES: { name: string; icon: string; build: () => Partial<Note> }[] = 
   },
   {
     name: 'Book notes',
-    icon: '📚',
-    build: () => ({ title: 'Book — ', folder: 'Personal', content: `# Book title\n**Author:** \n**Rating:** ⭐⭐⭐⭐\n\n## Key ideas\n1. \n\n## Quotes\n> \n\n## How I'll apply this\n- \n\n#books` }),
+    icon: 'book',
+    build: () => ({ title: 'Book — ', folder: 'Personal', content: `# Book title\n**Author:** \n**Rating:** 4/5\n\n## Key ideas\n1. \n\n## Quotes\n> \n\n## How I'll apply this\n- \n\n#books` }),
   },
 ];
 
@@ -199,7 +199,7 @@ export default function Notes() {
                 <div className="dropdown-menu" onMouseLeave={() => setShowTpl(false)}>
                   {TEMPLATES.map((t) => (
                     <button key={t.name} onClick={() => create(t)}>
-                      <span>{t.icon}</span> {t.name}
+                      <Icon name={t.icon} size={15} /> {t.name}
                     </button>
                   ))}
                 </div>
@@ -302,14 +302,14 @@ export default function Notes() {
                   <span className="sep" />
                   <button onClick={() => linePrefix('- ')} title="Bullet list">•</button>
                   <button onClick={() => linePrefix('1. ')} title="Numbered list">1.</button>
-                  <button onClick={() => linePrefix('- [ ] ')} title="Checklist">☑</button>
-                  <button onClick={() => linePrefix('> ')} title="Quote">❝</button>
+                  <button onClick={() => linePrefix('- [ ] ')} title="Checklist"><Icon name="checkSquare" size={14} /></button>
+                  <button onClick={() => linePrefix('> ')} title="Quote"><Icon name="quote" size={14} /></button>
                   <span className="sep" />
                   <button onClick={() => wrap('[', '](https://)', 'link')} title="Link (⌘K)"><Icon name="link" size={14} /></button>
                   <button onClick={() => wrap('[[', ']]', 'Note title')} title="Wiki link">[[ ]]</button>
                   <button onClick={() => wrap('\n```\n', '\n```\n', 'code')} title="Code block">{'{ }'}</button>
                   <button onClick={() => wrap('\n| Col 1 | Col 2 |\n| --- | --- |\n| ', ' |  |\n', 'cell')} title="Table">▦</button>
-                  <button onClick={() => wrap('\n> [!tip] ', '\n> \n', 'Title')} title="Callout">💡</button>
+                  <button onClick={() => wrap('\n> [!tip] ', '\n> \n', 'Title')} title="Callout"><Icon name="info" size={14} /></button>
                 </div>
               )}
               <div className={cx('note-body', `mode-${mode}`)}>
@@ -350,7 +350,7 @@ export default function Notes() {
                     ))}
                   </select>
                 )}
-                <span style={{ marginLeft: 'auto' }}>{saved ? `✓ Saved · edited ${timeAgo(note.updatedAt)}` : 'Saving…'}</span>
+                <span style={{ marginLeft: 'auto' }}>{saved ? `Saved · edited ${timeAgo(note.updatedAt)}` : 'Saving…'}</span>
               </div>
             </section>
           ) : (

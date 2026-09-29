@@ -1,0 +1,28 @@
+{
+  "name": "Nexus",
+  "short_name": "Nexus",
+  "description": "Tasks, notes, calendar, habits, focus and finances in one private workspace that lives on your device.",
+  "id": "./",
+  "start_url": "./#/dashboard",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#f5f5f7",
+  "theme_color": "#f5f5f7",
+  "categories": ["productivity", "lifestyle", "finance"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "shots/dashboard.jpg", "sizes": "2160x1350", "type": "image/jpeg", "form_factor": "wide", "label": "Dashboard" },
+    { "src": "shots/board.jpg", "sizes": "2160x1350", "type": "image/jpeg", "form_factor": "wide", "label": "Task board" }
+  ],
+  "shortcuts": [
+    { "name": "New task", "url": "./#/tasks", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Start focus", "url": "./#/focus", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Today's journal", "url": "./#/journal", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

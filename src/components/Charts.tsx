@@ -164,7 +164,7 @@ export function Ring({ value, size = 120, thickness = 10, color = 'var(--accent)
   );
 }
 
-export function Heatmap({ values, weeks = 26, color = '#7c5cff', weekStart = 1 }: { values: Record<ISODate, number>; weeks?: number; color?: string; weekStart?: 0 | 1 }) {
+export function Heatmap({ values, weeks = 26, color = 'var(--accent)', weekStart = 1 }: { values: Record<ISODate, number>; weeks?: number; color?: string; weekStart?: 0 | 1 }) {
   const end = today();
   const start = startOfWeek(addDays(end, -(weeks - 1) * 7), weekStart);
   const max = Math.max(1, ...Object.values(values));

@@ -122,7 +122,8 @@ export function goalProgress(g: Goal, data: DataState): { value: number; target:
 }
 
 export function monthTotals(tx: Transaction[], month: string) {
-  const inMonth = tx.filter((t) => t.date.startsWith(month));
+  // Transfers between your own accounts and manual balance fixes are not income or spending.
+  const inMonth = tx.filter((t) => t.date.startsWith(month) && (t.kind === 'income' || t.kind === 'expense'));
   const income = sum(inMonth.filter((t) => t.amount > 0).map((t) => t.amount));
   const expense = -sum(inMonth.filter((t) => t.amount < 0).map((t) => t.amount));
   const byCat: Record<string, number> = {};

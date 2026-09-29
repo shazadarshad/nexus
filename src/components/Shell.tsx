@@ -1,3 +1,4 @@
+import { LogoMark } from './Logo';
 import type { ReactNode } from 'react';
 import { useData } from '../store/data';
 import { useUI } from '../store/ui';
@@ -34,19 +35,11 @@ export function Sidebar() {
       {mobile && <div className="scrim" onClick={() => set({ mobileNav: false })} />}
       <aside className={cx('sidebar', collapsed && 'collapsed', mobile && 'mobile-open')}>
         <div className="brand">
-          <div className="logo">
-            <svg viewBox="0 0 32 32" width="28" height="28">
-              <defs>
-                <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="var(--accent)" />
-                  <stop offset="1" stopColor="#00d4ff" />
-                </linearGradient>
-              </defs>
-              <rect width="32" height="32" rx="9" fill="url(#lg)" />
-              <path d="M9 23V9l14 14V9" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          {!collapsed && <span className="brand-name">Nexus</span>}
+          <button className="brand-link" onClick={() => navigate('home')} title="Nexus home">
+            <LogoMark size={22} />
+            {!collapsed && <span className="wordmark">Nexus</span>}
+          </button>
+          
           <button
             className="icon-btn collapse-btn"
             onClick={() => {

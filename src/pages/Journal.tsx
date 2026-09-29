@@ -8,9 +8,9 @@ import { addDays, fmtDate, range, today, DAY_SHORT, weekdayOf, parseISO, startOf
 import { cx } from '../lib/id';
 import type { JournalEntry } from '../types';
 
-const MOODS = ['😞', '😕', '😐', '🙂', '😄'];
+const MOODS = ['1', '2', '3', '4', '5'];
 const MOOD_LABEL = ['Awful', 'Bad', 'Okay', 'Good', 'Great'];
-const MOOD_COLOR = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e'];
+const MOOD_COLOR = ['#d1d1d6', '#aeaeb2', '#8e8e93', '#5ac8fa', '#0071e3'];
 const PROMPTS = [
   'What made today meaningful?',
   'What is one thing you learned today?',
@@ -73,7 +73,7 @@ export default function Journal() {
             <div className="mood-row big">
               {MOODS.map((m, i) => (
                 <button key={i} className={cx('mood-btn', draft.mood === i + 1 && 'active')} onClick={() => commit({ ...draft, mood: (i + 1) as JournalEntry['mood'] })} title={MOOD_LABEL[i]}>
-                  {m}
+                  <span className="mood-num">{m}</span>
                   <span className="small">{MOOD_LABEL[i]}</span>
                 </button>
               ))}
@@ -88,7 +88,7 @@ export default function Journal() {
             <textarea className="input journal-text" rows={8} placeholder="Write freely…" value={draft.text} onChange={(e) => setDraft({ ...draft, text: e.target.value })} onBlur={() => save(draft)} />
           </div>
           <div className="field">
-            <label>🙏 I'm grateful for…</label>
+            <label>Grateful for</label>
             <input className="input" value={draft.gratitude} onChange={(e) => setDraft({ ...draft, gratitude: e.target.value })} onBlur={() => save(draft)} placeholder="Three small things" />
           </div>
           <div className="row between">
@@ -137,7 +137,7 @@ export default function Journal() {
             <div className="card-head">
               <h3>Mood · 30 days</h3>
             </div>
-            <AreaChart data={moodSeries} height={120} color="#84cc16" format={(v) => (v ? `${MOODS[v - 1]} ${MOOD_LABEL[v - 1]}` : 'No entry')} />
+            <AreaChart data={moodSeries} height={120} color="#0071e3" format={(v) => (v ? `${MOOD_LABEL[v - 1]} (${v}/5)` : 'No entry')} />
           </section>
           <section className="card">
             <div className="card-head">
@@ -147,7 +147,7 @@ export default function Journal() {
               const n = entries.filter((e) => e.mood === i + 1).length;
               return (
                 <div key={i} className="row gap-s small" style={{ marginBottom: 6 }}>
-                  <span>{m}</span>
+                  <span style={{ width: 44 }}>{MOOD_LABEL[Number(m) - 1]}</span>
                   <div className="progress flex-1" style={{ height: 8 }}>
                     <div className="progress-fill" style={{ width: `${entries.length ? (n / entries.length) * 100 : 0}%`, background: MOOD_COLOR[i] }} />
                   </div>

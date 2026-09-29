@@ -57,7 +57,7 @@ export default function Focus() {
   const mm = String(Math.floor(rem / 60)).padStart(2, '0');
   const ss = String(rem % 60).padStart(2, '0');
   const pct = 1 - t.remaining / t.total;
-  const color = t.mode === 'focus' ? 'var(--accent)' : t.mode === 'short' ? 'var(--success)' : '#00d4ff';
+  const color = t.mode === 'focus' ? 'var(--accent)' : t.mode === 'short' ? 'var(--success)' : 'var(--success)';
   const linked = tasks.find((x) => x.id === t.taskId);
   const todayMin = focusOn(sessions, today());
   const todaySessions = sessions.filter((s) => s.kind === 'focus' && dayOfTs(s.start) === today()).sort((a, b) => b.start - a.start);
@@ -179,7 +179,7 @@ export default function Focus() {
             <div className="noise-grid">
               {(['off', 'white', 'pink', 'brown', 'rain'] as NoiseKind[]).map((n) => (
                 <button key={n} className={cx('chip clickable', noise === n && 'active')} onClick={() => pickNoise(n)}>
-                  {{ off: '🔇 Off', white: '🌫 White', pink: '🌸 Pink', brown: '🌊 Brown', rain: '🌧 Rain' }[n]}
+                  {{ off: 'Off', white: 'White', pink: 'Pink', brown: 'Brown', rain: 'Rain' }[n]}
                 </button>
               ))}
             </div>

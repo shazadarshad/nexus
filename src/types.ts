@@ -81,13 +81,37 @@ export interface FocusSession {
   kind: 'focus' | 'break';
 }
 
+export type AccountType = 'bank' | 'savings' | 'cash' | 'card' | 'wallet';
+
+export interface Account {
+  id: ID;
+  name: string;
+  type: AccountType;
+  institution: string; // e.g. "Commercial Bank"
+  last4: string; // optional account / card number tail
+  openingBalance: number; // balance before the first recorded transaction
+  color: string;
+  archived: boolean;
+  createdAt: number;
+}
+
+/**
+ * income / expense: `amount` is signed (+ income, − expense) and moves `accountId`.
+ * transfer: `amount` is positive; money leaves `accountId` and lands in `toAccountId`.
+ * adjustment: signed correction when you set a balance by hand; excluded from reports.
+ */
+export type TxKind = 'income' | 'expense' | 'transfer' | 'adjustment';
+
 export interface Transaction {
   id: ID;
   date: ISODate;
-  amount: number; // + income, - expense
+  kind: TxKind;
+  amount: number;
   category: string;
   note: string;
-  account: string;
+  accountId: ID;
+  toAccountId: ID | null;
+  createdAt: number;
 }
 
 export interface JournalEntry {
@@ -143,6 +167,7 @@ export interface DataState {
   events: CalEvent[];
   habits: Habit[];
   sessions: FocusSession[];
+  accounts: Account[];
   transactions: Transaction[];
   budgets: Record<string, number>;
   journal: Record<ISODate, JournalEntry>;
@@ -152,6 +177,7 @@ export interface DataState {
 }
 
 export type Route =
+  | 'home'
   | 'dashboard'
   | 'tasks'
   | 'notes'

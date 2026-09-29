@@ -84,8 +84,8 @@ export function CommandPalette() {
       push({ id: 'o-' + n.id, group: 'Notes', label: n.title, icon: 'notes', hint: n.folder, run: () => { ui.set({ selectedNoteId: n.id }); ui.navigate('notes'); } }, `${n.title} ${n.tags.join(' ')} ${n.content.slice(0, 400)}`)
     );
     data.events.forEach((e) => push({ id: 'e-' + e.id, group: 'Events', label: e.title, icon: 'calendar', hint: fmtDate(e.date), run: () => ui.set({ eventModal: { id: e.id } }) }, `${e.title} ${e.location}`));
-    data.projects.forEach((p) => push({ id: 'p-' + p.id, group: 'Projects', label: `${p.icon} ${p.name}`, icon: 'folder', run: () => { ui.navigate('tasks'); window.dispatchEvent(new CustomEvent('nexus:filter-project', { detail: p.id })); } }, p.name));
-    data.habits.forEach((h) => push({ id: 'h-' + h.id, group: 'Habits', label: `${h.icon} ${h.name}`, icon: 'habits', hint: 'toggle today', run: () => { data.checkHabit(h.id, today()); toast(`Toggled ${h.name}`); } }, h.name));
+    data.projects.forEach((p) => push({ id: 'p-' + p.id, group: 'Projects', label: p.name, icon: 'folder', run: () => { ui.navigate('tasks'); window.dispatchEvent(new CustomEvent('nexus:filter-project', { detail: p.id })); } }, p.name));
+    data.habits.forEach((h) => push({ id: 'h-' + h.id, group: 'Habits', label: h.name, icon: 'habits', hint: 'toggle today', run: () => { data.checkHabit(h.id, today()); toast(`Toggled ${h.name}`); } }, h.name));
     all.sort((a, b) => b.score - a.score);
     const quick: Item = { id: 'quick', group: 'Actions', label: `Create task “${q}”`, icon: 'plus', run: () => { data.addTask({ title: q }); toast('Task created', { kind: 'success' }); } };
     return [...all.slice(0, 40), quick];

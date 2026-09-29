@@ -86,7 +86,7 @@ export function QuickAdd() {
             </button>
           ))}
           <span className="small muted" style={{ marginLeft: 'auto' }}>
-            <Kbd>Tab</Kbd> switch
+            <Kbd>Tab</Kbd> to switch
           </span>
         </div>
         <div className="qa-input-row">
@@ -112,7 +112,7 @@ export function QuickAdd() {
             <span className="qa-title">{parsed.title || <em className="muted">untitled</em>}</span>
             {parsed.chips.map((c, i) => (
               <span key={i} className={cx('chip', `chip-${c.kind}`)}>
-                {c.kind === 'date' && parsed.due ? `📅 ${relativeDay(parsed.due)} ${parsed.due !== today() ? `(${fmtDate(parsed.due)})` : ''}${parsed.dueTime ? ' · ' + fmtTime(parsed.dueTime) : ''}` : c.label}
+                {c.kind === 'date' && parsed.due ? `${relativeDay(parsed.due)} ${parsed.due !== today() ? `(${fmtDate(parsed.due)})` : ''}${parsed.dueTime ? ' · ' + fmtTime(parsed.dueTime) : ''}` : c.label}
               </span>
             ))}
           </div>

@@ -11,7 +11,9 @@ import { useTimerEngine } from './lib/timer';
 import type { Route } from './types';
 import { cx } from './lib/id';
 
-const pages: Record<Route, React.LazyExoticComponent<() => JSX.Element>> = {
+const Landing = lazy(() => import('./pages/Landing'));
+
+const pages: Record<Exclude<Route, 'home'>, React.LazyExoticComponent<() => JSX.Element>> = {
   dashboard: lazy(() => import('./pages/Dashboard')),
   tasks: lazy(() => import('./pages/Tasks')),
   notes: lazy(() => import('./pages/Notes')),
@@ -32,7 +34,7 @@ function useTheme() {
     const apply = () => {
       const dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
       root.dataset.theme = dark ? 'dark' : 'light';
-      document.querySelector('meta[name=theme-color]')?.setAttribute('content', dark ? '#0b0d12' : '#f7f7fb');
+      document.querySelector('meta[name=theme-color]')?.setAttribute('content', dark ? '#000000' : '#f5f5f7');
     };
     apply();
     root.style.setProperty('--accent', accent);
@@ -104,6 +106,13 @@ export default function App() {
   useTimerEngine();
   const route = useUI((s) => s.route);
   const collapsed = useUI((s) => s.sidebarCollapsed);
+  if (route === 'home')
+    return (
+      <Suspense fallback={null}>
+        <Landing />
+        <Toasts />
+      </Suspense>
+    );
   const Page = pages[route];
   return (
     <div className={cx('app', collapsed && 'sidebar-collapsed')}>

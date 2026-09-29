@@ -4,11 +4,12 @@ import { toast } from '../store/ui';
 import { Topbar } from '../components/Shell';
 import { Icon } from '../components/Icon';
 import { Confirm, Segmented } from '../components/ui';
+import { InstallButton, InstallStatus } from '../components/InstallButton';
 import { download, cx } from '../lib/id';
 import { today } from '../lib/date';
 import type { DataState, Settings as S } from '../types';
 
-const ACCENTS = ['#7c5cff', '#3b82f6', '#00b8d9', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'];
+const ACCENTS = ['#0071e3', '#1d1d1f', '#34a853', '#f5a623', '#ff3b30', '#af52de', '#5ac8fa', '#8e8e93'];
 
 export default function Settings() {
   const s = useData((x) => x.settings);
@@ -79,7 +80,7 @@ export default function Settings() {
           </Row>
           <Row label="Currency">
             <select className="input" value={s.currency} onChange={(e) => update({ currency: e.target.value })} style={{ maxWidth: 160 }}>
-              {['USD', 'EUR', 'GBP', 'JPY', 'INR', 'CAD', 'AUD', 'CHF', 'CNY', 'BRL', 'PKR', 'AED'].map((c) => (
+              {['LKR', 'USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD', 'AED', 'SGD', 'JPY'].map((c) => (
                 <option key={c}>{c}</option>
               ))}
             </select>
@@ -107,6 +108,15 @@ export default function Settings() {
           </Row>
           <Row label="Desktop notifications">
             {s.notifications ? <Switch checked onChange={() => update({ notifications: false })} /> : <button className="btn sm" onClick={requestNotif}><Icon name="bell" size={14} /> Enable</button>}
+          </Row>
+        </Section>
+
+        <Section title="App" icon="download">
+          <Row label="Install Nexus" hint="Open it from your dock or home screen, full-screen and offline">
+            <div className="row gap-s">
+              <InstallStatus />
+              <InstallButton label="Install" />
+            </div>
           </Row>
         </Section>
 
