@@ -42,10 +42,11 @@ interface UIState {
   setTimer: (p: Partial<TimerState>) => void;
 }
 
-const ROUTES: Route[] = ['dashboard', 'tasks', 'notes', 'calendar', 'habits', 'focus', 'goals', 'journal', 'finance', 'analytics', 'settings'];
+const ROUTES: Route[] = ['home', 'dashboard', 'tasks', 'notes', 'calendar', 'habits', 'focus', 'goals', 'journal', 'finance', 'analytics', 'settings'];
 
 export const routeFromHash = (): Route => {
   const h = window.location.hash.replace(/^#\/?/, '').split('/')[0] as Route;
+  if (!h) return 'home';
   return ROUTES.includes(h) ? h : 'dashboard';
 };
 

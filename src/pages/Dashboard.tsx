@@ -11,7 +11,7 @@ import { focusOn, goalProgress, habitStreak, insights, isHabitDone, monthTotals,
 import { cx, fmtMoney } from '../lib/id';
 import type { JournalEntry } from '../types';
 
-const MOODS = ['😞', '😕', '😐', '🙂', '😄'];
+const MOODS = ['Awful', 'Bad', 'Okay', 'Good', 'Great'];
 
 export default function Dashboard() {
   const state = useData();
@@ -42,35 +42,10 @@ export default function Dashboard() {
     <div className="page">
       <Topbar title={`${greeting()}, ${state.settings.name}`} subtitle={fmtDate(t, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} />
       <div className="dash-grid">
-        {/* Score */}
-        <section className="card score-card">
-          <div className="card-head">
-            <h3>Daily score</h3>
-            <span className="muted small">live</span>
-          </div>
-          <div className="score-body">
-            <Ring value={score.score / 100} size={132} thickness={12}>
-              <div className="ring-value">{score.score}</div>
-              <div className="small muted">/ 100</div>
-            </Ring>
-            <div className="score-parts">
-              {score.parts.map((p) => (
-                <div key={p.label}>
-                  <div className="row between small">
-                    <span>{p.label}</span>
-                    <span className="muted">{Math.round(p.value * 100)}%</span>
-                  </div>
-                  <Progress value={p.value} height={5} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Stats */}
         <section className="card stats-card">
-          <Stat icon="check" label="Done today" value={doneToday.length} color="#22c55e" sub={`${dueToday.length} remaining`} />
-          <Stat icon="focus" label="Focus" value={fmtMinutes(focusToday)} color="#7c5cff" sub={`goal ${fmtMinutes(state.settings.dailyFocusGoal)}`} extra={<Sparkline values={weekFocus} />} />
+          <Stat icon="check" label="Done today" value={doneToday.length} color="var(--accent)" sub={`${dueToday.length} remaining`} />
+          <Stat icon="focus" label="Focus" value={fmtMinutes(focusToday)} color="var(--accent)" sub={`goal ${fmtMinutes(state.settings.dailyFocusGoal)}`} extra={<Sparkline values={weekFocus} />} />
           <Stat icon="fire" label="Best streak" value={Math.max(0, ...state.habits.map((h) => habitStreak(h).current))} color="#f97316" sub="days in a row" />
           <Stat icon="flag" label="Overdue" value={overdue.length} color={overdue.length ? '#ef4444' : '#64748b'} sub={overdue.length ? 'needs attention' : 'all clear'} />
         </section>
@@ -82,7 +57,7 @@ export default function Dashboard() {
               <Icon name="tasks" size={16} /> Today
             </h3>
             <button className="link-btn small" onClick={() => ui.navigate('tasks')}>
-              All tasks →
+              All tasks <Icon name="chevronRight" size={13} />
             </button>
           </div>
           {overdue.length > 0 && (
@@ -164,6 +139,31 @@ export default function Dashboard() {
           )}
         </section>
 
+        {/* Score */}
+        <section className="card score-card">
+          <div className="card-head">
+            <h3>Daily score</h3>
+            <span className="muted small">live</span>
+          </div>
+          <div className="score-body">
+            <Ring value={score.score / 100} size={116} thickness={8}>
+              <div className="ring-value">{score.score}</div>
+              <div className="small muted">/ 100</div>
+            </Ring>
+            <div className="score-parts">
+              {score.parts.map((p) => (
+                <div key={p.label}>
+                  <div className="row between small">
+                    <span>{p.label}</span>
+                    <span className="muted">{Math.round(p.value * 100)}%</span>
+                  </div>
+                  <Progress value={p.value} height={5} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Habits */}
         <section className="card">
           <div className="card-head">
@@ -180,14 +180,54 @@ export default function Dashboard() {
               const cur = h.log[t] || 0;
               return (
                 <button key={h.id} className={cx('habit-pill', done && 'done')} style={{ ['--c' as string]: h.color }} onClick={() => state.checkHabit(h.id, t, h.targetPerDay > 1 ? (done ? -cur : 1) : undefined)}>
-                  <span className="habit-icon">{h.icon}</span>
+                  <span className="habit-icon"><Icon name={h.icon} size={15} /></span>
                   <span className="habit-name">{h.name}</span>
-                  <span className="small">{h.targetPerDay > 1 ? `${cur}/${h.targetPerDay}` : done ? '✓' : ''}</span>
+                  <span className="small">{h.targetPerDay > 1 ? `${cur}/${h.targetPerDay}` : done ? 'Done' : ''}</span>
                 </button>
               );
             })}
             {habits.length === 0 && <Empty icon="habits" title="No habits yet" />}
           </div>
+        </section>
+
+        {/* Insights */}
+        <section className="card span-2">
+          <div className="card-head">
+            <h3>
+              <Icon name="sparkles" size={16} /> Insights
+            </h3>
+            <button className="link-btn small" onClick={() => ui.navigate('analytics')}>
+              Analytics <Icon name="chevronRight" size={13} />
+            </button>
+          </div>
+          <ul className="insights">
+            {tips.slice(0, 4).map((x, i) => (
+              <li key={i}>
+                <RichText text={x} />
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Mood */}
+        <section className="card">
+          <div className="card-head">
+            <h3>
+              <Icon name="journal" size={16} /> How are you feeling?
+            </h3>
+            <button className="link-btn small" onClick={() => ui.navigate('journal')}>
+              Journal <Icon name="chevronRight" size={13} />
+            </button>
+          </div>
+          <div className="mood-row">
+            {MOODS.map((m, i) => (
+              <button key={i} className={cx('mood-btn', journal?.mood === i + 1 && 'active')} onClick={() => setMood((i + 1) as JournalEntry['mood'])} aria-label={`Mood ${m}`}>
+                <span className="mood-num">{i + 1}</span>
+                <span className="small">{m}</span>
+              </button>
+            ))}
+          </div>
+          {journal?.text && <p className="small muted clamp-2">“{journal.text}”</p>}
         </section>
 
         {/* Weekly chart */}
@@ -201,45 +241,6 @@ export default function Dashboard() {
           <BarChart data={weekTasks} height={150} color="var(--accent)" />
         </section>
 
-        {/* Mood */}
-        <section className="card">
-          <div className="card-head">
-            <h3>
-              <Icon name="journal" size={16} /> How are you feeling?
-            </h3>
-            <button className="link-btn small" onClick={() => ui.navigate('journal')}>
-              Journal →
-            </button>
-          </div>
-          <div className="mood-row">
-            {MOODS.map((m, i) => (
-              <button key={i} className={cx('mood-btn', journal?.mood === i + 1 && 'active')} onClick={() => setMood((i + 1) as JournalEntry['mood'])} aria-label={`Mood ${i + 1}`}>
-                {m}
-              </button>
-            ))}
-          </div>
-          {journal?.text && <p className="small muted clamp-2">“{journal.text}”</p>}
-        </section>
-
-        {/* Insights */}
-        <section className="card span-2">
-          <div className="card-head">
-            <h3>
-              <Icon name="sparkles" size={16} /> Insights
-            </h3>
-            <button className="link-btn small" onClick={() => ui.navigate('analytics')}>
-              Analytics →
-            </button>
-          </div>
-          <ul className="insights">
-            {tips.slice(0, 4).map((x, i) => (
-              <li key={i}>
-                <RichText text={x} />
-              </li>
-            ))}
-          </ul>
-        </section>
-
         {/* Goals */}
         <section className="card">
           <div className="card-head">
@@ -247,7 +248,7 @@ export default function Dashboard() {
               <Icon name="goals" size={16} /> Goals
             </h3>
             <button className="link-btn small" onClick={() => ui.navigate('goals')}>
-              All →
+              All <Icon name="chevronRight" size={13} />
             </button>
           </div>
           {state.goals.slice(0, 3).map((g) => {
@@ -272,7 +273,7 @@ export default function Dashboard() {
               <Icon name="wallet" size={16} /> This month
             </h3>
             <button className="link-btn small" onClick={() => ui.navigate('finance')}>
-              Finance →
+              Finance <Icon name="chevronRight" size={13} />
             </button>
           </div>
           <div className="fin-mini">
@@ -292,7 +293,7 @@ export default function Dashboard() {
         </section>
 
         {/* Activity */}
-        <section className="card">
+        <section className="card span-2">
           <div className="card-head">
             <h3>
               <Icon name="zap" size={16} /> Activity
@@ -308,6 +309,7 @@ export default function Dashboard() {
             ))}
           </div>
         </section>
+
       </div>
     </div>
   );

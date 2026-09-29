@@ -11,8 +11,8 @@ import { habitRate, habitStreak, isHabitDone, isHabitDue } from '../lib/analytic
 import { cx } from '../lib/id';
 import type { Habit } from '../types';
 
-const COLORS = ['#22c55e', '#00d4ff', '#7c5cff', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6'];
-const ICONS = ['✨', '💧', '🧘', '📖', '🏃', '💪', '🥗', '😴', '✍️', '🎸', '🧠', '📵', '🌅', '🚭', '💊', '🧹'];
+const COLORS = ['#0071e3', '#34a853', '#f5a623', '#af52de', '#ff3b30', '#5ac8fa', '#1d1d1f'];
+const ICONS = ['check', 'droplet', 'wind', 'book', 'activity', 'dumbbell', 'leaf', 'moon', 'edit', 'music', 'coffee', 'phoneOff', 'sun', 'heart', 'pill', 'focus'];
 
 export default function Habits() {
   const habits = useData((s) => s.habits);
@@ -43,12 +43,12 @@ export default function Habits() {
       />
       <div className="habit-top">
         <div className="card row gap-l center-v">
-          <Ring value={dueToday.length ? doneToday / dueToday.length : 0} size={110} color="var(--success)">
+          <Ring value={dueToday.length ? doneToday / dueToday.length : 0} size={110} color="var(--accent)">
             <div className="ring-value">{dueToday.length ? Math.round((doneToday / dueToday.length) * 100) : 0}%</div>
             <div className="small muted">today</div>
           </Ring>
           <div>
-            <div className="big-num">{Math.max(0, ...active.map((h) => habitStreak(h).current))}🔥</div>
+            <div className="big-num">{Math.max(0, ...active.map((h) => habitStreak(h).current))}<span className="unit"> days</span></div>
             <div className="muted small">longest active streak</div>
             <div className="big-num" style={{ marginTop: 8 }}>
               {active.length ? Math.round((active.reduce((a, h) => a + habitRate(h), 0) / active.length) * 100) : 0}%
@@ -60,7 +60,7 @@ export default function Habits() {
           <div className="card-head">
             <h3>Completion rate · 30 days</h3>
           </div>
-          <AreaChart data={trend} height={130} color="var(--success)" format={(v) => `${Math.round(v)}%`} />
+          <AreaChart data={trend} height={130} color="var(--accent)" format={(v) => `${Math.round(v)}%`} />
         </div>
       </div>
 
@@ -89,8 +89,8 @@ export default function Habits() {
               <div key={h.id}>
                 <div className="habit-row">
                   <button className="habit-label" onClick={() => setExpanded(expanded === h.id ? null : h.id)}>
-                    <span className="habit-emoji" style={{ background: `color-mix(in srgb, ${h.color} 18%, transparent)` }}>
-                      {h.icon}
+                    <span className="habit-emoji" style={{ color: h.color }}>
+                      <Icon name={h.icon} size={17} />
                     </span>
                     <span>
                       <strong>{h.name}</strong>
@@ -150,13 +150,13 @@ function HabitModal({ habit, onClose }: { habit: Habit | 'new' | null; onClose: 
   const isNew = habit === 'new';
   const h = habit && habit !== 'new' ? habit : null;
   const [key, setKey] = useState('');
-  const [d, setD] = useState({ name: '', icon: '✨', color: COLORS[0], targetPerDay: 1, daysOfWeek: [0, 1, 2, 3, 4, 5, 6] });
+  const [d, setD] = useState({ name: '', icon: 'check', color: COLORS[0], targetPerDay: 1, daysOfWeek: [0, 1, 2, 3, 4, 5, 6] });
   const [confirm, setConfirm] = useState(false);
   const cur = habit === 'new' ? 'new' : habit?.id || '';
   if (cur !== key) {
     setKey(cur);
     if (h) setD({ name: h.name, icon: h.icon, color: h.color, targetPerDay: h.targetPerDay, daysOfWeek: h.daysOfWeek });
-    else setD({ name: '', icon: '✨', color: COLORS[0], targetPerDay: 1, daysOfWeek: [0, 1, 2, 3, 4, 5, 6] });
+    else setD({ name: '', icon: 'check', color: COLORS[0], targetPerDay: 1, daysOfWeek: [0, 1, 2, 3, 4, 5, 6] });
   }
   const s = useData.getState();
   const save = () => {
@@ -198,7 +198,7 @@ function HabitModal({ habit, onClose }: { habit: Habit | 'new' | null; onClose: 
           <div className="emoji-grid">
             {ICONS.map((i) => (
               <button key={i} className={cx('emoji-btn', d.icon === i && 'active')} onClick={() => setD({ ...d, icon: i })}>
-                {i}
+                <Icon name={i} size={18} />
               </button>
             ))}
           </div>

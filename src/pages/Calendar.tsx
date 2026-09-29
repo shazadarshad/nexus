@@ -148,7 +148,7 @@ function MonthView({ cursor, weekStart, byDay, onDrop, onPickWeek }: { cursor: I
                     </div>
                   ) : (
                     <div key={it.x.id} className="cal-chip task" style={{ ['--c' as string]: PRIORITY_COLOR[it.x.priority] }} draggable onDragStart={(ev) => ev.dataTransfer.setData('text/task', it.x.id)} onClick={() => setUI({ taskModal: { id: it.x.id } })}>
-                      ☐ {it.x.title}
+                      {it.x.title}
                     </div>
                   )
                 )}
@@ -157,7 +157,7 @@ function MonthView({ cursor, weekStart, byDay, onDrop, onPickWeek }: { cursor: I
                     +{items.length - 3} more
                   </button>
                 )}
-                {doneCount > 0 && <div className="done-count">✓ {doneCount}</div>}
+                {doneCount > 0 && <div className="done-count">{doneCount} done</div>}
               </div>
             </div>
           );
@@ -269,7 +269,7 @@ function WeekView({ cursor, weekStart, byDay, onDrop }: { cursor: ISODate; weekS
                       <span>
                         {fmtTime(e.start)} – {fmtTime(e.end)}
                       </span>
-                      {e.location && h > 50 && <span>📍 {e.location}</span>}
+                      {e.location && h > 50 && <span>{e.location}</span>}
                     </div>
                   );
                 })}

@@ -12,17 +12,17 @@ import { cx, download, fmtMoney, fuzzy } from '../lib/id';
 import type { Transaction } from '../types';
 
 const CAT_COLORS: Record<string, string> = {
-  Groceries: '#22c55e',
-  Dining: '#f59e0b',
-  Transport: '#00d4ff',
-  Entertainment: '#ec4899',
-  Shopping: '#7c5cff',
-  Utilities: '#64748b',
-  Health: '#14b8a6',
-  Rent: '#ef4444',
-  Salary: '#22c55e',
-  Freelance: '#84cc16',
-  Other: '#94a3b8',
+  Rent: '#1d1d1f',
+  Groceries: '#0071e3',
+  Utilities: '#5ac8fa',
+  Health: '#34a853',
+  Shopping: '#af52de',
+  Entertainment: '#f5a623',
+  Dining: '#ff9500',
+  Transport: '#8e8e93',
+  Salary: '#0071e3',
+  Freelance: '#34a853',
+  Other: '#c7c7cc',
 };
 const EXPENSE_CATS = ['Groceries', 'Dining', 'Transport', 'Entertainment', 'Shopping', 'Utilities', 'Health', 'Rent', 'Other'];
 const INCOME_CATS = ['Salary', 'Freelance', 'Gift', 'Investment', 'Other'];
@@ -111,10 +111,10 @@ export default function Finance() {
       </div>
 
       <div className="fin-stats">
-        <FinStat label="Income" value={money(totals.income)} delta={delta(totals.income, prev.income)} good="up" icon="arrowDown" color="#22c55e" />
+        <FinStat label="Income" value={money(totals.income)} delta={delta(totals.income, prev.income)} good="up" icon="arrowDown" color="var(--accent)" />
         <FinStat label="Expenses" value={money(totals.expense)} delta={delta(totals.expense, prev.expense)} good="down" icon="arrowUp" color="#ef4444" />
         <FinStat label="Net savings" value={money(totals.net)} delta={delta(totals.net, prev.net)} good="up" icon="wallet" color="var(--accent)" />
-        <FinStat label="Savings rate" value={`${savingsRate.toFixed(0)}%`} sub={isCurrent ? `Forecast spend: ${money(forecast)}` : `${totals.count} transactions`} icon="trend" color="#00d4ff" />
+        <FinStat label="Savings rate" value={`${savingsRate.toFixed(0)}%`} sub={isCurrent ? `Forecast spend: ${money(forecast)}` : `${totals.count} transactions`} icon="trend" color="var(--accent)" />
       </div>
 
       <div className="fin-grid">
@@ -179,7 +179,7 @@ export default function Finance() {
           <div className="card-head">
             <h3>Cash flow · 6 months</h3>
             <span className="small muted">
-              <span className="dot" style={{ background: '#22c55e' }} /> income <span className="dot" style={{ background: '#ef4444', marginLeft: 8 }} /> expenses
+              <span className="dot" style={{ background: 'var(--accent)' }} /> Income <span className="dot" style={{ background: 'var(--surface-3)', marginLeft: 12 }} /> Expenses
             </span>
           </div>
           <div className="cashflow">
@@ -188,8 +188,8 @@ export default function Finance() {
               return (
                 <div key={m.m} className={cx('cf-col', m.m === month && 'active')} onClick={() => setMonth(m.m)}>
                   <div className="cf-bars">
-                    <div className="cf-bar" style={{ height: `${(m.income / max) * 100}%`, background: '#22c55e' }} title={`Income ${money(m.income)}`} />
-                    <div className="cf-bar" style={{ height: `${(m.expense / max) * 100}%`, background: '#ef4444' }} title={`Expenses ${money(m.expense)}`} />
+                    <div className="cf-bar" style={{ height: `${(m.income / max) * 100}%`, background: 'var(--accent)' }} title={`Income ${money(m.income)}`} />
+                    <div className="cf-bar" style={{ height: `${(m.expense / max) * 100}%`, background: 'var(--surface-3)' }} title={`Expenses ${money(m.expense)}`} />
                   </div>
                   <span className="small muted">{m.label}</span>
                   <span className={cx('small strong', m.income - m.expense < 0 && 'danger-text')}>{money(m.income - m.expense)}</span>
@@ -206,7 +206,7 @@ export default function Finance() {
           <BarChart
             height={120}
             highlightLast={false}
-            color="#f59e0b"
+            color="var(--accent)"
             format={(v) => money(v)}
             data={Array.from({ length: daysInMonth(month + '-01') }, (_, i) => {
               const d = `${month}-${String(i + 1).padStart(2, '0')}`;

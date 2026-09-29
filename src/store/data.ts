@@ -21,12 +21,12 @@ import { uid } from '../lib/id';
 import { addDays, addMonths, today, weekdayOf } from '../lib/date';
 import { createSeed } from '../lib/seed';
 
-export const DATA_VERSION = 1;
+export const DATA_VERSION = 2;
 
 export const defaultSettings: Settings = {
   name: 'Alex',
-  theme: 'dark',
-  accent: '#7c5cff',
+  theme: 'light',
+  accent: '#0071e3',
   weekStart: 1,
   focusMinutes: 25,
   shortBreak: 5,
@@ -238,7 +238,7 @@ export const useData = create<Store>()(
         },
 
         addProject: (p) => {
-          const project: Project = { id: uid(), color: '#7c5cff', icon: '📁', archived: false, ...p };
+          const project: Project = { id: uid(), color: '#7c5cff', icon: '', archived: false, ...p };
           set((s) => ({ projects: [...s.projects, project] }));
           log('task', `Created project “${project.name}”`);
           return project;
@@ -277,7 +277,7 @@ export const useData = create<Store>()(
         restoreNote: (n) => set((s) => ({ notes: [n, ...s.notes] })),
 
         addEvent: (e) => {
-          const ev: CalEvent = { id: uid(), start: '09:00', end: '10:00', allDay: false, color: '#00d4ff', location: '', notes: '', ...e };
+          const ev: CalEvent = { id: uid(), start: '09:00', end: '10:00', allDay: false, color: '#0071e3', location: '', notes: '', ...e };
           set((s) => ({ events: [...s.events, ev] }));
           log('event', `Scheduled “${ev.title}”`);
           return ev;
@@ -293,8 +293,8 @@ export const useData = create<Store>()(
         addHabit: (h) => {
           const habit: Habit = {
             id: uid(),
-            icon: '✨',
-            color: '#22c55e',
+            icon: 'check',
+            color: '#0071e3',
             targetPerDay: 1,
             daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
             log: {},
@@ -361,7 +361,7 @@ export const useData = create<Store>()(
             target: 100,
             manualProgress: 0,
             projectId: null,
-            color: '#7c5cff',
+            color: '#0071e3',
             createdAt: Date.now(),
             ...g,
           };
@@ -385,6 +385,7 @@ export const useData = create<Store>()(
       name: 'nexus-data',
       version: DATA_VERSION,
       storage: createJSONStorage(() => localStorage),
+      migrate: (persisted, from) => migrate(persisted as DataState, from),
       partialize: (s) => {
         // strip functions
         const { tasks, projects, notes, events, habits, sessions, transactions, budgets, journal, goals, activity, settings, version } = s;
@@ -393,6 +394,27 @@ export const useData = create<Store>()(
     }
   )
 );
+
+const LEGACY_COLORS: Record<string, string> = { '#7c5cff': '#0071e3', '#00d4ff': '#5ac8fa', '#22c55e': '#34a853', '#f59e0b': '#f5a623', '#ec4899': '#af52de', '#ef4444': '#ff3b30' };
+const LEGACY_HABIT_ICONS: Record<string, string> = { '💧': 'droplet', '🧘': 'wind', '📖': 'book', '🏃': 'activity', '📵': 'phoneOff', '✨': 'check', '💪': 'dumbbell' };
+const recolor = (c: string) => LEGACY_COLORS[c] || c;
+
+/** v1 → v2: move from the old purple/emoji look to the neutral design language. */
+function migrate(d: DataState, from: number): DataState {
+  if (from < 2 && d) {
+    d.projects = (d.projects || []).map((p) => ({ ...p, icon: '', color: recolor(p.color) }));
+    d.habits = (d.habits || []).map((h) => ({ ...h, icon: LEGACY_HABIT_ICONS[h.icon] || (/^[a-z]/i.test(h.icon) ? h.icon : 'check'), color: recolor(h.color) }));
+    d.events = (d.events || []).map((e) => ({ ...e, color: recolor(e.color), title: e.title.replace(/\s*\p{Extended_Pictographic}/gu, '') }));
+    d.goals = (d.goals || []).map((g) => ({ ...g, color: recolor(g.color) }));
+    d.notes = (d.notes || []).map((n) => ({ ...n, content: n.content.replace(/ ?\p{Extended_Pictographic}\uFE0F?/gu, '') }));
+    if (d.settings) {
+      if (d.settings.accent === '#7c5cff') d.settings.accent = '#0071e3';
+      if (d.settings.theme === 'dark') d.settings.theme = 'light';
+    }
+    d.version = 2;
+  }
+  return d;
+}
 
 export const getData = (): DataState => {
   const { tasks, projects, notes, events, habits, sessions, transactions, budgets, journal, goals, activity, settings, version } = useData.getState();

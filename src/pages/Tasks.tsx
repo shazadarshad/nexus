@@ -15,7 +15,7 @@ type View = 'list' | 'board' | 'table';
 type Group = 'due' | 'project' | 'priority' | 'status' | 'none';
 type Sort = 'smart' | 'due' | 'priority' | 'created' | 'title';
 
-const PROJECT_COLORS = ['#7c5cff', '#00d4ff', '#22c55e', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6', '#64748b'];
+const PROJECT_COLORS = ['#0071e3', '#5ac8fa', '#34a853', '#f5a623', '#ff3b30', '#af52de', '#8e8e93', '#1d1d1f'];
 
 export default function Tasks() {
   const tasks = useData((s) => s.tasks);
@@ -69,15 +69,15 @@ export default function Tasks() {
     if (group === 'none') add('all', 'All tasks', filtered);
     else if (group === 'due') {
       const open = filtered.filter((x) => x.status !== 'done');
-      add('overdue', 'Overdue', open.filter((x) => x.due && x.due < t), '#ef4444');
+      add('overdue', 'Overdue', open.filter((x) => x.due && x.due < t), 'var(--danger)');
       add('today', 'Today', open.filter((x) => x.due === t), 'var(--accent)');
       add('tomorrow', 'Tomorrow', open.filter((x) => x.due === addDays(t, 1)));
       add('week', 'Next 7 days', open.filter((x) => x.due && x.due > addDays(t, 1) && x.due <= addDays(t, 7)));
       add('later', 'Later', open.filter((x) => x.due && x.due > addDays(t, 7)));
       add('nodate', 'No date', open.filter((x) => !x.due));
-      add('done', 'Completed', filtered.filter((x) => x.status === 'done'), '#22c55e');
+      add('done', 'Completed', filtered.filter((x) => x.status === 'done'));
     } else if (group === 'project') {
-      projects.forEach((p) => add(p.id, `${p.icon} ${p.name}`, filtered.filter((x) => x.projectId === p.id), p.color));
+      projects.forEach((p) => add(p.id, p.name, filtered.filter((x) => x.projectId === p.id), p.color));
       add('none', 'No project', filtered.filter((x) => !x.projectId || !projects.some((p) => p.id === x.projectId)));
     } else if (group === 'priority') {
       [4, 3, 2, 1, 0].forEach((p) => add(String(p), PRIORITY_LABEL[p], filtered.filter((x) => x.priority === p)));
@@ -140,7 +140,7 @@ export default function Tasks() {
           <option value="none">No project</option>
           {projects.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.icon} {p.name}
+              {p.name}
             </option>
           ))}
         </select>
@@ -360,16 +360,16 @@ function Board({ tasks }: { tasks: Task[] }) {
                       <div className="board-meta">
                         {p && (
                           <span className="project-pill tiny" style={{ ['--c' as string]: p.color }}>
-                            {p.icon} {p.name}
+                            {p.name}
                           </span>
                         )}
-                        {t.status === 'done' && t.completedAt ? <span className="meta">✓ {timeAgo(t.completedAt)}</span> : t.due && <span className={cx('meta', t.due < today() && 'danger')}>{relativeDay(t.due)}</span>}
+                        {t.status === 'done' && t.completedAt ? <span className="meta">Done {timeAgo(t.completedAt)}</span> : t.due && <span className={cx('meta', t.due < today() && 'danger')}>{relativeDay(t.due)}</span>}
                         {t.subtasks.length > 0 && (
                           <span className="meta">
-                            ☑ {subDone}/{t.subtasks.length}
+                            {subDone}/{t.subtasks.length} subtasks
                           </span>
                         )}
-                        {t.estimate && <span className="meta">⏱ {fmtMinutes(t.estimate)}</span>}
+                        {t.estimate && <span className="meta">{fmtMinutes(t.estimate)}</span>}
                       </div>
                     </div>
                   </div>
@@ -474,7 +474,6 @@ function ProjectsModal({ open, onClose }: { open: boolean; onClose: () => void }
   const tasks = useData((s) => s.tasks);
   const { addProject, updateProject, deleteProject } = useData.getState();
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('📁');
   const [color, setColor] = useState(PROJECT_COLORS[0]);
   return (
     <Modal open={open} onClose={onClose} title="Projects" width={560}>
@@ -484,7 +483,7 @@ function ProjectsModal({ open, onClose }: { open: boolean; onClose: () => void }
           const done = ts.filter((t) => t.status === 'done').length;
           return (
             <div key={p.id} className="project-item">
-              <input className="bare emoji-input" value={p.icon} onChange={(e) => updateProject(p.id, { icon: e.target.value.slice(-2) || '📁' })} aria-label="Icon" />
+              <span className="dot" style={{ background: p.color }} />
               <input className="bare strong" value={p.name} onChange={(e) => updateProject(p.id, { name: e.target.value })} />
               <span className="small muted nowrap">
                 {done}/{ts.length} done
@@ -503,9 +502,8 @@ function ProjectsModal({ open, onClose }: { open: boolean; onClose: () => void }
       </div>
       <div className="sub-head">New project</div>
       <div className="row gap-s">
-        <input className="input" style={{ width: 56, textAlign: 'center' }} value={icon} onChange={(e) => setIcon(e.target.value)} aria-label="Icon" />
-        <input className="input" placeholder="Project name" value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && name.trim()) { addProject({ name: name.trim(), icon, color }); setName(''); } }} />
-        <button className="btn primary" disabled={!name.trim()} onClick={() => { addProject({ name: name.trim(), icon, color }); setName(''); }}>
+        <input className="input" placeholder="Project name" value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && name.trim()) { addProject({ name: name.trim(), color }); setName(''); } }} />
+        <button className="btn primary" disabled={!name.trim()} onClick={() => { addProject({ name: name.trim(), color }); setName(''); }}>
           Add
         </button>
       </div>

@@ -102,7 +102,7 @@ export function Toasts() {
 }
 
 export const PRIORITY_LABEL = ['None', 'Low', 'Medium', 'High', 'Urgent'];
-export const PRIORITY_COLOR = ['var(--muted)', '#60a5fa', '#f59e0b', '#f97316', '#ef4444'];
+export const PRIORITY_COLOR = ['var(--muted)', '#8e8e93', '#f5a623', '#ff9500', '#ff3b30'];
 
 export function PriorityFlag({ p, size = 14 }: { p: Priority; size?: number }) {
   if (!p) return null;

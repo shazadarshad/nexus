@@ -20,11 +20,11 @@ export function createSeed(): DataState {
   const dayTs = (d: string, h = 12) => parseISO(d).getTime() + h * 3600000;
 
   const projects: Project[] = [
-    { id: 'p-web', name: 'Website Relaunch', color: '#7c5cff', icon: '🚀', archived: false },
-    { id: 'p-health', name: 'Health', color: '#22c55e', icon: '💪', archived: false },
-    { id: 'p-learn', name: 'Learning', color: '#f59e0b', icon: '📚', archived: false },
-    { id: 'p-home', name: 'Home', color: '#ec4899', icon: '🏡', archived: false },
-    { id: 'p-side', name: 'Side Project', color: '#00d4ff', icon: '⚡', archived: false },
+    { id: 'p-web', name: 'Website Relaunch', color: '#0071e3', icon: '', archived: false },
+    { id: 'p-health', name: 'Health', color: '#34a853', icon: '', archived: false },
+    { id: 'p-learn', name: 'Learning', color: '#f5a623', icon: '', archived: false },
+    { id: 'p-home', name: 'Home', color: '#af52de', icon: '', archived: false },
+    { id: 'p-side', name: 'Side Project', color: '#5ac8fa', icon: '', archived: false },
   ];
 
   const mk = (title: string, o: Partial<Task> = {}): Task => ({
@@ -97,7 +97,7 @@ export function createSeed(): DataState {
       tags: ['guide'],
       createdAt: dayTs(t0, 8),
       updatedAt: Date.now(),
-      content: `# Welcome to Nexus 👋
+      content: `# Welcome to Nexus
 
 Nexus is your **personal operating system** — tasks, notes, calendar, habits, focus, goals, journal and finances in one fast, private, local-first app.
 
@@ -166,7 +166,7 @@ Related: [[Welcome to Nexus]] #work`,
       tags: ['books'],
       createdAt: dayTs(addDays(t0, -30)),
       updatedAt: dayTs(addDays(t0, -5)),
-      content: `# Reading List 📚
+      content: `# Reading List
 
 - [x] Deep Work — Cal Newport
 - [x] Atomic Habits — James Clear
@@ -220,25 +220,25 @@ See also [[Reading List]] #engineering`,
     notes: '',
   });
   const events: CalEvent[] = [
-    ev(0, 'Team standup', '09:30', '09:45', '#00d4ff', 'Zoom'),
-    ev(0, 'Design review', '13:00', '14:00', '#7c5cff', 'Room 4B'),
-    ev(0, 'Gym', '18:30', '19:30', '#22c55e'),
-    ev(1, 'Team standup', '09:30', '09:45', '#00d4ff', 'Zoom'),
-    ev(1, '1:1 with manager', '11:00', '11:30', '#f59e0b'),
-    ev(2, 'Client call — Acme', '15:00', '16:00', '#ec4899', 'Google Meet'),
-    ev(3, 'Dinner with Sam', '19:30', '21:30', '#ef4444', 'Luigi’s'),
-    ev(5, 'Hackathon', '10:00', '17:00', '#7c5cff'),
-    ev(-1, 'Sprint retro', '16:00', '17:00', '#00d4ff'),
-    ev(-3, 'Doctor', '08:30', '09:15', '#22c55e'),
-    { ...ev(8, 'Mom’s birthday 🎂', '00:00', '23:59', '#ec4899'), allDay: true },
+    ev(0, 'Team standup', '09:30', '09:45', '#5ac8fa', 'Zoom'),
+    ev(0, 'Design review', '13:00', '14:00', '#0071e3', 'Room 4B'),
+    ev(0, 'Gym', '18:30', '19:30', '#34a853'),
+    ev(1, 'Team standup', '09:30', '09:45', '#5ac8fa', 'Zoom'),
+    ev(1, '1:1 with manager', '11:00', '11:30', '#f5a623'),
+    ev(2, 'Client call — Acme', '15:00', '16:00', '#af52de', 'Google Meet'),
+    ev(3, 'Dinner with Sam', '19:30', '21:30', '#ff3b30', 'Luigi’s'),
+    ev(5, 'Hackathon', '10:00', '17:00', '#0071e3'),
+    ev(-1, 'Sprint retro', '16:00', '17:00', '#5ac8fa'),
+    ev(-3, 'Doctor', '08:30', '09:15', '#34a853'),
+    { ...ev(8, 'Mom’s birthday', '00:00', '23:59', '#af52de'), allDay: true },
   ];
 
   const habitDefs: [string, string, string, number, number][] = [
-    ['Drink water', '💧', '#00d4ff', 8, 0.85],
-    ['Meditate', '🧘', '#7c5cff', 1, 0.7],
-    ['Read 20 min', '📖', '#f59e0b', 1, 0.6],
-    ['Exercise', '🏃', '#22c55e', 1, 0.55],
-    ['No phone after 10pm', '📵', '#ef4444', 1, 0.45],
+    ['Drink water', 'droplet', '#5ac8fa', 8, 0.85],
+    ['Meditate', 'wind', '#0071e3', 1, 0.7],
+    ['Read 20 min', 'book', '#f5a623', 1, 0.6],
+    ['Exercise', 'activity', '#34a853', 1, 0.55],
+    ['No phone after 10pm', 'phoneOff', '#ff3b30', 1, 0.45],
   ];
   const habits: Habit[] = habitDefs.map(([name, icon, color, target, p]) => {
     const log: Record<string, number> = {};
@@ -299,9 +299,9 @@ See also [[Reading List]] #engineering`,
   }
 
   const goals: Goal[] = [
-    { id: uid(), title: 'Launch the new website', description: 'Ship v2 of the marketing site.', deadline: addDays(t0, 21), metric: 'tasks', target: 0, manualProgress: 0, projectId: 'p-web', color: '#7c5cff', createdAt: dayTs(addDays(t0, -20)) },
-    { id: uid(), title: 'Deep work: 40 hours this month', description: 'Protect focus time.', deadline: addDays(t0, 30), metric: 'focus', target: 2400, manualProgress: 0, projectId: null, color: '#00d4ff', createdAt: dayTs(addDays(t0, -15)) },
-    { id: uid(), title: 'Read 12 books this year', description: '', deadline: null, metric: 'manual', target: 12, manualProgress: 7, projectId: null, color: '#f59e0b', createdAt: dayTs(addDays(t0, -100)) },
+    { id: uid(), title: 'Launch the new website', description: 'Ship v2 of the marketing site.', deadline: addDays(t0, 21), metric: 'tasks', target: 0, manualProgress: 0, projectId: 'p-web', color: '#0071e3', createdAt: dayTs(addDays(t0, -20)) },
+    { id: uid(), title: 'Deep work: 40 hours this month', description: 'Protect focus time.', deadline: addDays(t0, 30), metric: 'focus', target: 2400, manualProgress: 0, projectId: null, color: '#5ac8fa', createdAt: dayTs(addDays(t0, -15)) },
+    { id: uid(), title: 'Read 12 books this year', description: '', deadline: null, metric: 'manual', target: 12, manualProgress: 7, projectId: null, color: '#f5a623', createdAt: dayTs(addDays(t0, -100)) },
   ];
 
   return {
@@ -321,8 +321,8 @@ See also [[Reading List]] #engineering`,
     ],
     settings: {
       name: 'Alex',
-      theme: 'dark',
-      accent: '#7c5cff',
+      theme: 'light',
+      accent: '#0071e3',
       weekStart: 1,
       focusMinutes: 25,
       shortBreak: 5,

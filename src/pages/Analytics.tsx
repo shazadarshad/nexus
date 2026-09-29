@@ -35,7 +35,7 @@ export default function Analytics() {
   });
   const wdOrder = state.settings.weekStart === 1 ? [1, 2, 3, 4, 5, 6, 0] : [0, 1, 2, 3, 4, 5, 6];
   const byProject = state.projects
-    .map((p) => ({ label: `${p.icon} ${p.name}`, value: doneInRange.filter((t) => t.projectId === p.id).length, color: p.color }))
+    .map((p) => ({ label: p.name, value: doneInRange.filter((t) => t.projectId === p.id).length, color: p.color }))
     .concat([{ label: 'No project', value: doneInRange.filter((t) => !t.projectId).length, color: '#64748b' }])
     .filter((x) => x.value > 0);
   const est = state.tasks.filter((t) => t.estimate && t.timeSpent);
@@ -82,26 +82,26 @@ export default function Analytics() {
             <h3>Tasks completed</h3>
             <span className="small muted">dashed = previous period</span>
           </div>
-          <AreaChart data={cur} secondary={prev} height={200} color="#22c55e" />
+          <AreaChart data={cur} secondary={prev} height={200} color="var(--accent)" />
         </section>
         <section className="card span-2">
           <div className="card-head">
             <h3>Focus minutes</h3>
           </div>
-          <AreaChart data={fCur} secondary={fPrev} height={200} color="#7c5cff" format={fmtMinutes} />
+          <AreaChart data={fCur} secondary={fPrev} height={200} color="var(--accent)" format={fmtMinutes} />
         </section>
         <section className="card span-2">
           <div className="card-head">
             <h3>Activity heatmap · 26 weeks</h3>
             <span className="small muted">tasks, focus, habits & journal</span>
           </div>
-          <Heatmap values={heat} weeks={26} color={state.settings.accent} weekStart={state.settings.weekStart} />
+          <Heatmap values={heat} weeks={26} color="var(--accent)" weekStart={state.settings.weekStart} />
         </section>
         <section className="card span-2">
           <div className="card-head">
             <h3>Daily score trend</h3>
           </div>
-          <AreaChart data={scoreSeries} height={160} color="#f59e0b" />
+          <AreaChart data={scoreSeries} height={160} color="var(--accent)" />
         </section>
         <section className="card">
           <div className="card-head">
@@ -113,7 +113,7 @@ export default function Analytics() {
           <div className="card-head">
             <h3>By hour of day</h3>
           </div>
-          <BarChart data={byHour.slice(6, 24).map((v, i) => ({ label: String(i + 6), value: v }))} height={150} highlightLast={false} color="#00d4ff" />
+          <BarChart data={byHour.slice(6, 24).map((v, i) => ({ label: String(i + 6), value: v }))} height={150} highlightLast={false} color="var(--accent)" />
         </section>
         <section className="card">
           <div className="card-head">
@@ -140,7 +140,7 @@ export default function Analytics() {
             <div key={h.id} className="budget-row">
               <div className="row between small">
                 <span>
-                  {h.icon} {h.name}
+                  {h.name}
                 </span>
                 <strong>{Math.round(habitRate(h, n) * 100)}%</strong>
               </div>

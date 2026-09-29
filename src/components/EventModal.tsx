@@ -8,7 +8,7 @@ import { Icon } from './Icon';
 import { today } from '../lib/date';
 import { cx } from '../lib/id';
 
-export const EVENT_COLORS = ['#7c5cff', '#00d4ff', '#22c55e', '#f59e0b', '#ef4444', '#ec4899', '#64748b'];
+export const EVENT_COLORS = ['#0071e3', '#5ac8fa', '#34a853', '#f5a623', '#ff3b30', '#af52de', '#8e8e93'];
 
 export function EventModal() {
   const modal = useUI((s) => s.eventModal);

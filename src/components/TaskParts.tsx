@@ -9,10 +9,10 @@ import { addDays, fmtMinutes, fmtTime, relativeDay, timeAgo, today } from '../li
 import { renderMarkdown } from '../lib/markdown';
 
 export const STATUS_META: Record<TaskStatus, { label: string; color: string }> = {
-  backlog: { label: 'Backlog', color: '#64748b' },
-  todo: { label: 'To do', color: '#60a5fa' },
-  doing: { label: 'In progress', color: '#f59e0b' },
-  done: { label: 'Done', color: '#22c55e' },
+  backlog: { label: 'Backlog', color: '#c7c7cc' },
+  todo: { label: 'To do', color: '#8e8e93' },
+  doing: { label: 'In progress', color: '#f5a623' },
+  done: { label: 'Done', color: '#34a853' },
 };
 
 export function Check({ done, onClick, color }: { done: boolean; onClick: () => void; color?: string }) {
@@ -105,7 +105,7 @@ export function TaskRow({ task, showProject = true, selected, onSelect, compact 
       <PriorityFlag p={task.priority} />
       {showProject && project && (
         <span className="project-pill" style={{ ['--c' as string]: project.color }}>
-          {project.icon} {project.name}
+          {project.name}
         </span>
       )}
     </div>
@@ -303,7 +303,7 @@ export function TaskModal() {
               <option value="">No project</option>
               {projects.filter((p) => !p.archived).map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.icon} {p.name}
+                  {p.name}
                 </option>
               ))}
             </select>

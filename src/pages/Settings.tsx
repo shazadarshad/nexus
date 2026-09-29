@@ -8,7 +8,7 @@ import { download, cx } from '../lib/id';
 import { today } from '../lib/date';
 import type { DataState, Settings as S } from '../types';
 
-const ACCENTS = ['#7c5cff', '#3b82f6', '#00b8d9', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6'];
+const ACCENTS = ['#0071e3', '#1d1d1f', '#34a853', '#f5a623', '#ff3b30', '#af52de', '#5ac8fa', '#8e8e93'];
 
 export default function Settings() {
   const s = useData((x) => x.settings);

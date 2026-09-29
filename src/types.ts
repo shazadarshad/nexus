@@ -152,6 +152,7 @@ export interface DataState {
 }
 
 export type Route =
+  | 'home'
   | 'dashboard'
   | 'tasks'
   | 'notes'
